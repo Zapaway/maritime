@@ -1,22 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { NavigationContainer } from '@react-navigation/native';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import GlobalScreen from './screens/GlobalScreen';
+import LocalScreen from './screens/LocalScreen';
+import { styled } from 'nativewind';
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function App() {
   return (
-    // <View style={styles.container}>
-    //   <Text>Open up App.tsx to start working on your app!</Text>
-    //   <StatusBar style="auto" />
-    // </View>
-    <WebView source={{uri: "https://maritime-web-new.vercel.app"}} />
+    <SafeAreaView style={{flex: 1,}}>
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={{swipeEnabled: false}}>
+        <Tab.Screen name="Global" component={GlobalScreen} />
+        <Tab.Screen name="Local" component={LocalScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
