@@ -1,4 +1,5 @@
 import type { MaterialTopTabScreenProps } from "@react-navigation/material-top-tabs";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type UserTabsParamList = {
   Global: undefined;
@@ -13,4 +14,13 @@ export type GlobalScreenProps = MaterialTopTabScreenProps<
 export type LocalScreenProps = MaterialTopTabScreenProps<
   UserTabsParamList,
   "Local"
+>;
+
+export type AuthStackParamList = {
+  Splash: undefined;
+};
+
+export type SplashScreenProps = NativeStackScreenProps<
+  AuthStackParamList,
+  "Splash"
 >;

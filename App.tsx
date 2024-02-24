@@ -8,7 +8,7 @@ import LocalScreen from "./screens/user/LocalScreen";
 import { styled } from "nativewind";
 import { UserTabsParamList } from "./types/routes";
 import { useAuthStore } from "./services/auth";
-import { UserStack } from "./screens";
+import { AuthStack, UserStack } from "./screens";
 
 
 
@@ -16,6 +16,6 @@ export default function App() {
   const [ user ] = useAuthStore(state => [state.user]);
 
   return (
-    <UserStack />
+    user ? <UserStack /> : <AuthStack />
   );
 }

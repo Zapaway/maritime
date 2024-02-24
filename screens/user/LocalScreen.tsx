@@ -83,6 +83,7 @@ export default function App() {
 
 <TouchableOpacity
                 onPress={__retakePicture}
+                // @ts-ignore
                 style={{
                   position: 'absolute',
                   bottom: 20,
