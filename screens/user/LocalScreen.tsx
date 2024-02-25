@@ -194,7 +194,7 @@ export default function App() {
     // console.log("URI", testUrl);
     
     console.log("URL", imgDownloadUrl);
-    const res = await axios.get(`https://5e18-2607-fb90-ad98-861f-5553-d063-4eb9-2867.ngrok-free.app/capture/${imgDownloadUrl}`)
+    const res = await axios.get(`https://a66f-2607-fb90-ad98-861f-5553-d063-4eb9-2867.ngrok-free.app/capture/${imgDownloadUrl}`)
 
     await AsyncStorage.setItem('storedLocation', JSON.stringify(currentLocation));
 
