@@ -2,6 +2,7 @@
   "expo": {
     "name": "maritime",
     "slug": "maritime",
+    "plugins": ["@react-native-google-signin/google-signin"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -11,6 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -23,11 +25,16 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.anonymous.maritime"
+    },
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO"
       ]
+    
     },
+  
+   
     "web": {
       "favicon": "./assets/favicon.png"
     },
@@ -40,4 +47,4 @@
       ]
     ]
   }
-}
+

@@ -19,13 +19,14 @@ export const useAuthStore = create<IAuthState>((set) => ({
 
 export async function signInWithGoogle() {
     try {
+       
         const result = await signInWithPopup(auth, provider);
+        
         const user = result.user; 
-
+        
         useAuthStore.setState({user});
     }
     catch (e) {
         // HANDLE ERRORS HERE
     }
-
 }
