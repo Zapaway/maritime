@@ -1,10 +1,41 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground } from 'react-native';
-import { Camera } from 'expo-camera';
+import { Camera, CameraCapturedPicture } from 'expo-camera';
 import * as Location from 'expo-location';
 import { LocationObjectCoords } from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { getCaptureDownloadUrl, uploadCapture } from '../../services/storage';
+import axios from "axios";
+
+
+// const readImage = async (imgSrc: string, width: number, height: number) => {
+//   canvas.width = width;
+//   Canvas.height = height;
+//   const context = Canvas.getContext("2d");
+//   const image = new CanvasImage(Canvas);
+
+//   const options = { encoding: "base64", compress: 0.4 };
+//   const base64 = await FileSystem.readAsStringAsync(imgSrc);
+//   const src = "data:image/png;base64," + base64;
+//   image.src = src;
+//   image.addEventListener("load", () => {
+//     context.drawImage(image, 0, 0);
+//     context
+//       .getImageData(0, 0, canvas.width, canvas.height)
+//       .then((imageData) => {
+//         console.log(
+//           "Image data:",
+//           imageData,
+//           Object.values(imageData.data).length
+//         );
+//       })
+//       .catch((e) => {
+//         console.error("Error with fetching image data:", e);
+//       });
+//   });
+// };
 
 
 export default function App() {
@@ -41,7 +72,7 @@ export default function App() {
 
   const [startCamera, setStartCamera] = React.useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
-  const [capturedImage, setCapturedImage] = useState<any>(null);
+  const [capturedImage, setCapturedImage] = useState<CameraCapturedPicture | null>(null);
   const TAKE_PICTURE_TEXT = 'Take Picture';
   
 
@@ -57,14 +88,14 @@ export default function App() {
 
   const __takePicture = async () => {
     if (!camera) return;
-    const photo = await camera.takePictureAsync();
-    console.log(photo);
+
+    const photo = await camera.takePictureAsync({ base64: true });
+    // console.log("photo", photo);
     setPreviewVisible(true);
     setCapturedImage(photo);
   };
 
   const CameraPreview = ({ photo }: any) => {
-    console.log('sdsfds', photo);
     return (
       <View
         style={{
@@ -138,9 +169,25 @@ export default function App() {
     __startCamera()
   }
 
-  const __usePicture = () => {
-    const [capturedImage, setCapturedImage] = useState(null);
-    const [startCamera, setStartCamera] = useState(false);
+  const __usePicture = async () => {
+    // upload image to Firebase 
+    const resizeResult = await manipulateAsync(
+      capturedImage!.uri, [{ resize: { width: 77, height: 58 }}], { format: SaveFormat.PNG, base64: true }
+    );
+
+    const response = await fetch(resizeResult.uri!);
+    const blob = await response.blob();
+
+    await uploadCapture(blob, "testing");
+    const imgDownloadUrl = await getCaptureDownloadUrl("testing");
+    // const testUrl = encodeURIComponent("https://www.youtube.com");
+    // console.log("URI", testUrl);
+    
+    console.log("URL", imgDownloadUrl);
+    const res = await axios.get(`https://3b97-12-74-53-25.ngrok-free.app/capture/${imgDownloadUrl}`)
+        
+    setCapturedImage(null);
+    __exitCamera();
   }
 
   const __exitCamera = () => {
@@ -157,7 +204,7 @@ export default function App() {
           style={{ flex: 1, width: '100%' }}
           ref={(r) => {
             camera = r;
-          }}
+          }}          
         >
           <View
             style={{
