@@ -1,32 +1,32 @@
 import { User, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { create } from "zustand";
 
-import { auth } from "../firebase.config";
+// import { auth } from "../firebase.config";
 
-const provider = new GoogleAuthProvider();
+// const provider = new GoogleAuthProvider();
 
-auth.onAuthStateChanged(function (user) {
-    useAuthStore.setState({ user });
-} );
+// auth.onAuthStateChanged(function (user) {
+//     useAuthStore.setState({ user });
+// } );
 
 interface IAuthState {
-    user: User | null;
+    user: "user" | null;
 }
 
 export const useAuthStore = create<IAuthState>((set) => ({
     user: null
 }));
 
-export async function signInWithGoogle() {
-    try {
+// export async function signInWithGoogle() {
+//     try {
        
-        const result = await signInWithPopup(auth, provider);
+//         const result = await signInWithPopup(auth, provider);
         
-        const user = result.user; 
+//         const user = result.user; 
         
-        useAuthStore.setState({user});
-    }
-    catch (e) {
-        // HANDLE ERRORS HERE
-    }
-}
+//         useAuthStore.setState({user});
+//     }
+//     catch (e) {
+//         // HANDLE ERRORS HERE
+//     }
+// }

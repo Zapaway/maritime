@@ -15,10 +15,8 @@ import { AuthStack, UserStack } from "./screens";
 export default function App() {
   const [ user ] = useAuthStore(state => [state.user]);
 
-  // return (
-  //   user ? <UserStack /> : <AuthStack />
-  // );
   return (
-    <UserStack />
-  );
+    user ? <UserStack /> : <AuthStack />
+ );
+  
 }

@@ -1,12 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera, CameraCapturedPicture } from 'expo-camera';
 import * as Location from 'expo-location';
 import { LocationObjectCoords } from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { getCaptureDownloadUrl, uploadCapture } from '../../services/storage';
+import LoadingSpinner from './LoadingSpinner'; 
+import PopupModal from './PopModal';
 import axios from "axios";
 
 
@@ -169,7 +172,14 @@ export default function App() {
     __startCamera()
   }
 
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [popupText, setPopupText] = useState('');
+
   const __usePicture = async () => {
+    try {
+      setLoading(true);
+
     // upload image to Firebase 
     const resizeResult = await manipulateAsync(
       capturedImage!.uri, [{ resize: { width: 77, height: 58 }}], { format: SaveFormat.PNG, base64: true }
@@ -184,18 +194,52 @@ export default function App() {
     // console.log("URI", testUrl);
     
     console.log("URL", imgDownloadUrl);
-    const res = await axios.get(`https://3b97-12-74-53-25.ngrok-free.app/capture/${imgDownloadUrl}`)
-        
+    // const res = await axios.get(`https://3b97-12-74-53-25.ngrok-free.app/capture/${imgDownloadUrl}`)
+    const res = "hello world"
+    console.log(res)
+
+    await AsyncStorage.setItem('storedLocation', JSON.stringify(currentLocation));
+
+    // Update the map based on the new location
+    updateMapWithStoredLocation();
+    setPopupText(res);
+    setShowModal(true);
     setCapturedImage(null);
     __exitCamera();
+    } finally {
+      setLoading(false);
+    }
+
   }
+
+  const updateMapWithStoredLocation = async () => {
+    try {
+      const storedLocationString = await AsyncStorage.getItem('storedLocation');
+      if (storedLocationString) {
+        const storedLocation = JSON.parse(storedLocationString);
+        setCurrentLocation(storedLocation);
+      }
+    } catch (error) {
+      console.error('Error retrieving stored location:', error);
+    }
+  };
 
   const __exitCamera = () => {
     setStartCamera(false)
   }
 
+  const closePopup = () => {
+    setShowModal(false);
+  };
+
   return (
-    <>
+    
+
+   
+    
+    <> 
+   {loading && <LoadingSpinner />} 
+   
       <StatusBar style="auto" />
       {previewVisible && capturedImage ? (
         <CameraPreview photo={capturedImage}  />
@@ -300,6 +344,8 @@ export default function App() {
             description="This is your current location"
           />
 
+          
+
 <TouchableOpacity
             onPress={__startCamera}
             style={{
@@ -320,6 +366,10 @@ export default function App() {
                 color: '#fff',
                 fontWeight: 'bold',
                 textAlign: 'center',
+                position: 'absolute',
+                bottom: -435,
+                right: -250,
+                
               }}
             >
               {TAKE_PICTURE_TEXT}
@@ -327,6 +377,7 @@ export default function App() {
           </TouchableOpacity>
           
         </MapView>
+        <PopupModal isVisible={showModal} text={popupText} onClose={closePopup} />
       </View>
       )}
     </>

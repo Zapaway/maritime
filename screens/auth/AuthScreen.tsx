@@ -2,9 +2,18 @@ import React, { useRef, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Swiper from 'react-native-swiper';
 import LottieView from 'lottie-react-native';
+import { useAuthStore } from '../../services/auth';
 
-const OnboardPage = ({ iconSource, text, onPressButton, onPressNewButton }) => {
+const OnboardPage = ({ iconSource, text, onPressButton, onPressNewButton, navigation }) => {
   const animation = useRef(null);
+
+  const handleNewButtonPress = () => {
+  
+    // Navigate to the UserStack when the "Drop in" button is pressed
+    
+    useAuthStore.setState({ user: "user"});
+   
+  };
 
   return (
     <View style={styles.slide}>
@@ -28,7 +37,7 @@ const OnboardPage = ({ iconSource, text, onPressButton, onPressNewButton }) => {
           </TouchableOpacity>
         )}
         {onPressNewButton && (
-          <TouchableOpacity style={styles.newButton} onPress={onPressNewButton}>
+          <TouchableOpacity style={styles.newButton } onPress={handleNewButtonPress}>
             <Text style={styles.newButtonText}>Drop in</Text>
           </TouchableOpacity>
         )}
@@ -63,7 +72,7 @@ export default function OnboardScreen() {
   },
   {
     iconSource: require('../animatedIcons/recycle.json'),
-    text: 'Explore Page 2 Features!',
+    text: "Check out what's been in our ocean and help us clean it up!",
     onPressButton: handleButtonPress,
   },
   {
